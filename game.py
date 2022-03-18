@@ -6,7 +6,7 @@ pygame.init()
 size = width, height = 1480, 700
 
 speed = [1, 1]
-speed2 = [2,-2]
+speed2 = [2,-2 ]
 
 black = 0,0,0
 
@@ -40,6 +40,8 @@ if os.path.isfile(filename):
 else:
 	scoreboard = []
 
+from tkinter import *
+from tkinter import messagebox
 
 
 def end_game():
@@ -48,10 +50,11 @@ def end_game():
 	speed_change()
 	scoreboard.append(score)
 	scoreboard.sort(reverse=True)
-	print(f'you are in position {scoreboard.index(score)} out of {len(scoreboard)}')
-	print(f'final score {score:,}')
 	     
 	pickle.dump(scoreboard, open(filename, 'wb'))
+
+	Tk().wm_withdraw() #to hide the main window
+	messagebox.showinfo('You are brutal', f'you are in position {scoreboard.index(score)} out of {len(scoreboard)}. final score {score:,}')
 
 	sys.exit()        
 
