@@ -1,77 +1,60 @@
 import sys, pygame
+import random
+import math
 
 pygame.init()
 
-size = width, height = 800, 600
+screen_size = width, height = 800, 600
 
-speed = [1, 1]
 black = 0,0,0
 
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(screen_size)
 
+delay = 0
+class Particle:
+	def __init__(self, pos, size):
+		self.x, self.y = pos
+		self.size = size
+		self.color = (0,0,255)
+		self.thickness = 3
+		self.speed = 0.1
+		self.angle = 0
 
-ball = pygame.image.load('resources/little-hound.jpg')
-ballrect = ball.get_rect()
+	def display(self):
+		pygame.draw.circle(screen, self.color, (self.x, self.y), self.size, self.thickness)
 
-begin = pygame.time.get_ticks()
+	def move(self):
+		self.x +=math.sin(self.angle)*self.speed
+		self.y -=math.cos(self.angle)*self.speed
 
-score = 0
-delay = 5
-
-bg = pygame.image.load('resources/family.png')
-
-def end_game():
 	
-	print('GAME OVER')
-	speed_change()
-	print(f'final score {score:,}')
-	sys.exit()        
+size = random.randint(20, 30)
+x = random.randint(size, width-size)
+y = random.randint(size, height-size)
 
-def speed_change():
-	pygame.mixer.Sound('resources/dog.mp3').play()   
-	global begin
-	global score
-	global delay
-	end = pygame.time.get_ticks()
-	elapsed = end-begin
-	score = score+(elapsed*((10-delay)**2))
-	delay = delay-1
-	begin = end
-	print(f'speed is {10-delay}')
+particle =  Particle((x, y), size)
 
 
 while True:
 	for event in pygame.event.get():
 		if event.type ==pygame.QUIT: sys.exit()
-		if event.type ==pygame.KEYDOWN:
-			if event.unicode=='p':
-				# righto
-				speed[0] = 1
-			elif event.unicode=='o':
-				# left
-				speed[0] = -1
-			elif event.unicode=='q':
-				# up
-				speed[1] = -1
-			elif event.unicode=='a':
-				# down
-				speed[1] = 1
-			elif event.key==32:
-				speed_change()
-				
 
-	ballrect = ballrect.move(speed)
-	if ballrect.left<0 or ballrect.right > width:
-		speed[0] = -speed[0]
-		end_game()
-	if ballrect.top < 0 or ballrect.bottom> height:
-		speed[1] = -speed[1]
-		end_game()
+	# jump_size = 5
+	# x = x+(jump_size if random.randint(0,10)>5 else -1*jump_size)
+	# if x<0: x = 0
+	# if x>width: x = width
 
+	# y = y+(jump_size if random.randint(0,10)>5 else -1*jump_size)
+	# if y<0: y = 0
+	# if y>height: y = height
+	# print(x)
+	# particle.x = x
+	# particle.y = y
 	screen.fill(black)
-	screen.blit(bg, (0, 0))
-	screen.blit(ball, ballrect)
+	particle.move()
+	particle.display()
+	pygame.display.flip()					
+	
 
-	pygame.display.flip()
-	pygame.time.wait(delay)
+	# pygame.time.wait(delay)
 
