@@ -10,22 +10,32 @@ black = 0,0,0
 
 screen = pygame.display.set_mode(screen_size)
 
-delay = 0
+delay = 10
 class Particle:
 	def __init__(self, pos, size):
 		self.x, self.y = pos
 		self.size = size
 		self.color = (0,0,255)
 		self.thickness = 3
-		self.speed = 0.1
-		self.angle = 0
+		# self.speed = 0.1
+		# self.angle = 0
+		self.vx = random.randint(0,2)
+		self.vy = random.randint(0,2)
 
 	def display(self):
-		pygame.draw.circle(screen, self.color, (self.x, self.y), self.size, self.thickness)
+		# print(screen, self.color, (self.x, self.y), self.size)
+		pygame.draw.circle(screen, self.color, (self.x, self.y), self.size)
 
 	def move(self):
-		self.x +=math.sin(self.angle)*self.speed
-		self.y -=math.cos(self.angle)*self.speed
+		millis = pygame.time.get_ticks()
+		print(millis)
+
+		self.x +=(self.vx*millis/1000)
+		self.y +=(self.vy*millis/1000)
+		if self.x>width: self.x = 0
+		if self.y>height: self.y = 0
+		if self.x<0: self.x = width
+		if self.y<0: self.y = height
 
 	
 size = random.randint(20, 30)
@@ -39,22 +49,11 @@ while True:
 	for event in pygame.event.get():
 		if event.type ==pygame.QUIT: sys.exit()
 
-	# jump_size = 5
-	# x = x+(jump_size if random.randint(0,10)>5 else -1*jump_size)
-	# if x<0: x = 0
-	# if x>width: x = width
-
-	# y = y+(jump_size if random.randint(0,10)>5 else -1*jump_size)
-	# if y<0: y = 0
-	# if y>height: y = height
-	# print(x)
-	# particle.x = x
-	# particle.y = y
 	screen.fill(black)
 	particle.move()
 	particle.display()
 	pygame.display.flip()					
 	
 
-	# pygame.time.wait(delay)
+	pygame.time.wait(delay)
 
