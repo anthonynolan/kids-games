@@ -10,7 +10,7 @@ black = 0,0,0
 screen = pygame.display.set_mode(size)
 
 
-ball = pygame.image.load('little-hound.jpg')
+ball = pygame.image.load('resources/little-hound.jpg')
 ballrect = ball.get_rect()
 
 begin = pygame.time.get_ticks()
@@ -18,7 +18,7 @@ begin = pygame.time.get_ticks()
 score = 0
 delay = 5
 
-bg = pygame.image.load('family.png')
+bg = pygame.image.load('resources/family.png')
 
 def end_game():
 	
@@ -28,7 +28,7 @@ def end_game():
 	sys.exit()        
 
 def speed_change():
-	pygame.mixer.Sound('dog.mp3').play()   
+	pygame.mixer.Sound('resources/dog.mp3').play()   
 	global begin
 	global score
 	global delay
