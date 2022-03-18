@@ -19,8 +19,8 @@ class Particle:
 		self.thickness = 3
 		# self.speed = 0.1
 		# self.angle = 0
-		self.vx = random.randint(0,2)
-		self.vy = random.randint(0,2)
+		self.vx = random.randint(0,10)
+		self.vy = random.randint(0,10)
 
 	def display(self):
 		# print(screen, self.color, (self.x, self.y), self.size)
