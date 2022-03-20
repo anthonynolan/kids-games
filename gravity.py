@@ -7,6 +7,7 @@ delay = 0
 
 pygame.init()
 screen = pygame.display.set_mode(screen_size)
+font = pygame.font.Font('freesansbold.ttf', 32)
 
 particle =  Particle((width//2, height//2), screen_size, screen)
 
@@ -26,6 +27,9 @@ while True:
 	particle.move(accel)
 	particle.display()
 	
+	velocity_text = font.render(str([particle.vx, particle.vy]), True, (255,255,255))
+	screen.blit(velocity_text, (20,20)) 
+
 	pygame.display.flip()					
 	
 	pygame.time.wait(delay)
