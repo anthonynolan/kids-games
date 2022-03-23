@@ -1,7 +1,7 @@
 import random
 import pygame
 
-const_accel = 20
+const_accel = 40
 
 class Particle:
 
