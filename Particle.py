@@ -1,33 +1,37 @@
 import random
 import pygame
+import numpy as np
 
 const_accel = 40
 
 class Particle:
 
-	def __init__(self, pos, screen_dims, screen):
-		self.x, self.y = pos
+	def __init__(self, screen_dims):
+		
 		self.width, self.height = screen_dims
-		self.screen = screen
+		self.x, self.y = self.width//2, self.height//2
 
-		self.color = (0,0,255)
-		self.vx = random.randint(0,100)
-		self.vy = random.randint(0,100)
+		self.rotation_angle = 0
+
+		self.vx = 0
+		self.vy = 0
 		self.ticks = pygame.time.get_ticks()
 
-	def display(self):
-		pygame.draw.circle(self.screen, self.color, (self.x, self.y), 10)
+	def rotate_left(self):
+		self.rotation_angle -=10
+		print(self.rotation_angle)
+	def rotate_right(self):
+		self.rotation_angle +=10
+		print(self.rotation_angle)
 
-	def move(self, acceleration):
-		now = pygame.time.get_ticks()
-		dt = now - self.ticks
-		self.ticks = now
+	def move(self, dt):
 
-		if acceleration:
-			self.vx +=const_accel*dt/1000
-			self.vy +=const_accel*dt/1000
+		ax = const_accel *np.cos(self.rotation_angle)
+		ay = const_accel *np.sin(self.rotation_angle)
 
-		# print(self.vx, self.vy)
+		self.vx +=ax*dt/1000
+		self.vy +=ay*dt/1000
+
 		self.x +=(self.vx*dt/1000)
 		self.y +=(self.vy*dt/1000)
 		if self.x>self.width: self.x = 0
@@ -35,3 +39,5 @@ class Particle:
 		if self.x<0: self.x = self.width
 		if self.y<0: self.y = self.height
 
+
+			
