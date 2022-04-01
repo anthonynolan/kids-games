@@ -18,10 +18,15 @@ clock = pygame.time.Clock()
 
 font = pygame.font.Font('freesansbold.ttf', 32)
 
-
+def field(pos):
+    black_hole_loc = np.array([640,480])/4
+    distance = np.linalg.norm(pos - black_hole_loc)
+    print(distance)
+    f = 1/(distance/100)
+    return f
 
 g = np.array([0, -9.81]) 
-factor = 10
+factor = 1000
 
 balls = [Ball((screen_dims/2*random.uniform(0,2)) , np.array([0., 0.]), 10) for _ in range(50)]
 print(balls)
@@ -56,7 +61,8 @@ while running:
             ball.pos[1] = ball.radius
             ball.vel[1] = -ball.vel[1]
 
-        ball.vel = ball.vel - g*time_passed_seconds*factor
+        # ball.vel = ball.vel - g*time_passed_seconds
+        ball.vel = ball.vel - time_passed_seconds*field(ball.pos)
         ball.pos += time_passed_seconds*ball.vel
 
         
