@@ -6,6 +6,7 @@ def field(pos):
     print(distance)
     f = 1/distance
     print(f)
+    return
 
 field(np.array([640,480]))
 field(np.array([340,480]))
