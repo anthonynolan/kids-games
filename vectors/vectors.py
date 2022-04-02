@@ -2,14 +2,12 @@
 
 import pygame
 import numpy as np
-import random
-
-from Ball import Ball
+from Asteroid import Asteroid
+from Ship import Ship
+from utils import degrees_to_radians
 
 BLACK = (0,0,0)
 RED = (255,0,0)
-h = '3bfafa'
-PALE_BLUE =  tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
 
 screen_dims  = np.array([640,480])
 
@@ -20,25 +18,17 @@ clock = pygame.time.Clock()
 
 font = pygame.font.Font('freesansbold.ttf', 32)
 
-def field(pos):
-    black_hole_loc = np.array([640,480])/2
-    distance = np.linalg.norm(pos - black_hole_loc)
-    f = (black_hole_loc-pos)/distance
-    print(f)
-    return f, black_hole_loc
+ship = Ship(screen_dims, screen_dims/2)
 
+acc_const = 3
 
-def draw_field_line(origin, black_hole_loc):
-    distance = np.linalg.norm(black_hole_loc-origin)
-    print(distance)
-    field_vector = (origin, black_hole_loc)/distance
-    return field_vector*100
+accelerating = False
+rotating = np.array([0,0])
 
+asteroids = [Asteroid(screen_dims) for _ in range(5)]
 
-g = np.array([0, -9.81]) 
-factor = 10000
+print(asteroids)
 
-balls = [Ball(np.array([screen_dims[0]/(2*random.uniform(0,2)),screen_dims[1]/(2*random.uniform(0,2))]) , np.array([0., 0.]), 10) for _ in range(5)]
 running = True
 while running:
     for event in pygame.event.get():
@@ -47,44 +37,48 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+            if event.key == pygame.K_UP:
+                accelerating = True
+            if event.key == pygame.K_LEFT:
+                rotating[0] = True
+            if event.key == pygame.K_RIGHT:
+                rotating[1] = True
 
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP:
+                accelerating = False
+            if event.key == pygame.K_LEFT:
+                rotating[0] = False
+            
+            if event.key == pygame.K_RIGHT:
+                rotating[1] = False
+                
     time_passed = clock.tick()
-    time_passed_seconds = time_passed/10000
+    time_passed_seconds = time_passed/1000
+
+    if rotating[0]:
+        ship.rotation_angle -=degrees_to_radians(10)
+    if rotating[1]:
+        ship.rotation_angle +=degrees_to_radians(10)
+
+    if accelerating:
+        ship.acc[0] += acc_const * np.cos(degrees_to_radians(ship.rotation_angle))
+        ship.acc[1] += acc_const * np.sin(degrees_to_radians(ship.rotation_angle))
+    else:
+        ship.acc = np.array([0,0])
+
+    # velocity
+    ship.vel +=ship.acc*time_passed_seconds
+    ship.pos+=ship.vel*time_passed_seconds
+
+    ship.check_bounds()
 
     screen.fill(BLACK)
 
-    for ball in balls:
-        if ball.pos[0] >= (screen_dims[0]-ball.radius):
-            ball.pos[0] = screen_dims[0]-ball.radius
-            ball.vel[0] = -ball.vel[0]*.9
+    screen.blit(pygame.transform.rotate(ship.image, -ship.rotation_angle), ship.pos)
 
-        if ball.pos[0]<= ball.radius:
-            ball.pos[0] = ball.radius
-            ball.vel[0] = -ball.vel[0]*.9
-
-        if ball.pos[1] >= (screen_dims[1]-ball.radius):
-            ball.pos[1] = screen_dims[1]-ball.radius
-            ball.vel[1] = -ball.vel[1]*.9
-
-        if ball.pos[1]<= ball.radius: 
-            ball.pos[1] = ball.radius
-            ball.vel[1] = -ball.vel[1]*.9
-
-        # ball.vel = ball.vel - g*time_passed_seconds
-        field_strength, black_hole_loc = field(ball.pos)
-
-        ball.vel = ball.vel - time_passed_seconds*field_strength*factor
-        ball.pos += time_passed_seconds*ball.vel
-
-        for x in np.linspace(0,screen_dims[0], 3):
-            for y in np.linspace(0, screen_dims[1], 3):
-                print(draw_field_line((x, y), black_hole_loc))
-                pygame.draw.line(screen, RED, *draw_field_line((x, y), black_hole_loc))
-
-        pygame.draw.circle(screen, RED, ball.pos, ball.radius, 1)
-        pygame.draw.circle(screen, PALE_BLUE, black_hole_loc, 5)
-
-    # velocity_text = font.render(str(ball.pos.astype(int)), True, (255,255,255))
-    # screen.blit(velocity_text, (20,20)) 
+    for asteroid in asteroids:
+        asteroid.move(time_passed_seconds)
+        pygame.draw.circle(screen, (0, 255, 0), asteroid.pos, asteroid.radius)
 
     pygame.display.update()
