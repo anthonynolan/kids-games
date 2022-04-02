@@ -21,16 +21,24 @@ clock = pygame.time.Clock()
 font = pygame.font.Font('freesansbold.ttf', 32)
 
 def field(pos):
-    black_hole_loc = np.array([640,480])/4
+    black_hole_loc = np.array([640,480])/2
     distance = np.linalg.norm(pos - black_hole_loc)
     f = (black_hole_loc-pos)/distance
     print(f)
     return f, black_hole_loc
 
+
+def draw_field_line(origin, black_hole_loc):
+    distance = np.linalg.norm(black_hole_loc-origin)
+    print(distance)
+    field_vector = (origin, black_hole_loc)/distance
+    return field_vector*100
+
+
 g = np.array([0, -9.81]) 
 factor = 10000
 
-balls = [Ball(np.array([screen_dims[0]/(2*random.uniform(0,2)),screen_dims[1]/(2*random.uniform(0,2))]) , np.array([0., 0.]), 10) for _ in range(20)]
+balls = [Ball(np.array([screen_dims[0]/(2*random.uniform(0,2)),screen_dims[1]/(2*random.uniform(0,2))]) , np.array([0., 0.]), 10) for _ in range(5)]
 running = True
 while running:
     for event in pygame.event.get():
@@ -68,7 +76,10 @@ while running:
         ball.vel = ball.vel - time_passed_seconds*field_strength*factor
         ball.pos += time_passed_seconds*ball.vel
 
-        
+        for x in np.linspace(0,screen_dims[0], 3):
+            for y in np.linspace(0, screen_dims[1], 3):
+                print(draw_field_line((x, y), black_hole_loc))
+                pygame.draw.line(screen, RED, *draw_field_line((x, y), black_hole_loc))
 
         pygame.draw.circle(screen, RED, ball.pos, ball.radius, 1)
         pygame.draw.circle(screen, PALE_BLUE, black_hole_loc, 5)
