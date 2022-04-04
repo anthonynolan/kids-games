@@ -10,16 +10,18 @@ from utils import degrees_to_radians
 BLACK = (0,0,0)
 RED = (255,0,0)
 
-screen_dims  = np.array([640,480])
+screen_dims  = np.array([1920,1080])
 
 pygame.init()
 
 screen = pygame.display.set_mode(screen_dims, 0, 32)
+print(pygame.display.list_modes())
+
 clock = pygame.time.Clock()
 
 font = pygame.font.Font('freesansbold.ttf', 32)
 
-ship = Ship(screen_dims, screen_dims/2)
+ship = Ship(screen, screen_dims, screen_dims/2)
 
 acc_const = 3
 rotation_const = 100
