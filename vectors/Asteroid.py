@@ -5,7 +5,7 @@ from utils import degrees_to_radians
 from Roller import Roller
 
 class Asteroid(Roller):
-    velocity_constant = 40
+    velocity_constant = 80
     def __init__(self, screen_dims):
         super().__init__(screen_dims)
         self.pos = screen_dims[0] * random.uniform(0,1), screen_dims[1] * random.uniform(0,1)
