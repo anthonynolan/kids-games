@@ -22,17 +22,19 @@ pygame.init()
 screen = pygame.display.set_mode(screen_dims, 0, 32)
 print(pygame.display.list_modes())
 
+
+background = pygame.image.load('../resources/background.png')
 clock = pygame.time.Clock()
 
 font = pygame.font.Font('freesansbold.ttf', 32)
 
 ship = Ship(screen, screen_dims, screen_dims/2)
 
-acc_const = 3
-rotation_const = 100
+
+
 bullet_velocity_const = 250
 
-asteroid_count = 5
+asteroid_count = 0
 
 accelerating = False
 rotating = np.array([0,0])
@@ -55,9 +57,9 @@ while running:
             if event.key == pygame.K_UP:
                 accelerating = True
             if event.key == pygame.K_LEFT:
-                rotating[0] = True
-            if event.key == pygame.K_RIGHT:
                 rotating[1] = True
+            if event.key == pygame.K_RIGHT:
+                rotating[0] = True
             if event.key==pygame.K_SPACE:
                 pygame.mixer.Sound('../resources/hq-explosion-6288.mp3').play()   
 
@@ -69,38 +71,19 @@ while running:
             if event.key == pygame.K_UP:
                 accelerating = False
             if event.key == pygame.K_LEFT:
-                rotating[0] = False
+                rotating[1] = False
             
             if event.key == pygame.K_RIGHT:
-                rotating[1] = False
+                rotating[0] = False
                 
     time_passed = clock.tick()
     time_passed_seconds = time_passed/1000
 
-    if rotating[1]:
-        ship.rotation_angle -=rotation_const*time_passed_seconds
-    if rotating[0]:
-        ship.rotation_angle +=rotation_const*time_passed_seconds
 
-    if accelerating:
-        ship.acc[0] += acc_const * np.cos(degrees_to_radians(ship.rotation_angle))
-        ship.acc[1] += acc_const * np.sin(degrees_to_radians(ship.rotation_angle))
-    else:
-        ship.acc = np.array([0,0])
+    screen.blit(background, (0,0))
 
-    # velocity
-    ship.vel +=ship.acc*time_passed_seconds
-    ship.pos+=ship.vel*time_passed_seconds
+    ship.move(time_passed_seconds, rotating, accelerating)
 
-    # ship.origin = ship.pos
-    # print(ship)
-    ship.check_bounds()
-
-    screen.fill(BLACK)
-
-    # screen.blit(pygame.transform.rotate(ship.image, -ship.rotation_angle), ship.pos)
-
-    ship.move()
     for asteroid in asteroids:
         asteroid.move(time_passed_seconds)
         asteroid.rect= pygame.draw.circle(screen, (0, 255, 0), asteroid.pos, asteroid.radius)
