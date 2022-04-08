@@ -4,7 +4,7 @@ import pygame
 from pygame import Rect
 
 class SpriteShip(Roller):
-    velocity_const = 100
+    velocity_const = 140
 
     def __init__(self, screen):
         super().__init__()
