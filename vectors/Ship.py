@@ -30,8 +30,8 @@ class Ship(Roller):
             self.rotation_angle +=rotation_const*time_passed_seconds
 
         if accelerating:
-            self.acc[0] += acc_const * np.cos(degrees_to_radians(self.rotation_angle-120))
-            self.acc[1] += acc_const * np.sin(degrees_to_radians(self.rotation_angle-120))
+            self.acc[0] += acc_const * np.cos(degrees_to_radians(self.rotation_angle))
+            self.acc[1] += acc_const * np.sin(degrees_to_radians(self.rotation_angle))
             print(f'acceleration {self.acc}')
         else:
             self.acc = np.array([0,0])

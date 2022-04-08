@@ -28,7 +28,7 @@ clock = pygame.time.Clock()
 
 font = pygame.font.Font('freesansbold.ttf', 32)
 
-ship = Ship(screen, screen_dims, screen_dims/2)
+# ship = Ship(screen, screen_dims, screen_dims/2)
 
 
 
@@ -60,11 +60,11 @@ while running:
                 rotating[1] = True
             if event.key == pygame.K_RIGHT:
                 rotating[0] = True
-            if event.key==pygame.K_SPACE:
-                pygame.mixer.Sound('../resources/hq-explosion-6288.mp3').play()   
+            # if event.key==pygame.K_SPACE:
+                # pygame.mixer.Sound('../resources/hq-explosion-6288.mp3').play()   
 
-                bullet = Bullet(ship.gun, ship.rotation_angle, bullet_velocity_const)
-                bullets.append(bullet)
+                # bullet = Bullet(ship.gun, ship.rotation_angle, bullet_velocity_const)
+                # bullets.append(bullet)
                 
 
         if event.type == pygame.KEYUP:
@@ -82,7 +82,7 @@ while running:
 
     screen.blit(background, (0,0))
 
-    ship.move(time_passed_seconds, rotating, accelerating)
+    # ship.move(time_passed_seconds, rotating, accelerating)
 
     for asteroid in asteroids:
         asteroid.move(time_passed_seconds)
@@ -95,14 +95,14 @@ while running:
     # collision detection
 
     for asteroid in asteroids:
-        if asteroid.rect.colliderect(ship.rect):
-            asteroids.remove(asteroid)
-            pygame.mixer.Sound('../resources/bad-explosion-6855.mp3').play()   
-            lives -=1
-            if lives==0:
-                Tk().wm_withdraw() #to hide the main window
-                messagebox.showinfo('Game Over')
-                sys.exit()        
+        # if asteroid.rect.colliderect(ship.rect):
+        #     asteroids.remove(asteroid)
+        #     pygame.mixer.Sound('../resources/bad-explosion-6855.mp3').play()   
+        #     lives -=1
+        #     if lives==0:
+        #         Tk().wm_withdraw() #to hide the main window
+        #         messagebox.showinfo('Game Over')
+        #         sys.exit()        
 
         for bullet in bullets:
             if asteroid.rect.colliderect(bullet.rect):
