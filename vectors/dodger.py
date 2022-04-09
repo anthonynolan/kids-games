@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 
+import ast
 import pygame
 import numpy as np
 
-screen_dims  = np.array([1920,1080])
+screen_dims  = np.array([800, 600])
 
+pygame.init()
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+print(joysticks)
 screen = pygame.display.set_mode(screen_dims, 0, 32)
 
 clock = pygame.time.Clock()
@@ -12,12 +17,29 @@ clock = pygame.time.Clock()
 from Asteroid import Asteroid
 from SpriteShip import SpriteShip
 
-asteroid_count = 100
+import sys
+from tkinter import *
+from tkinter import messagebox
+
+asteroid_count = 20
+
+font = pygame.font.Font('freesansbold.ttf', 32)
+
+lives = 3
 
 asteroids = [Asteroid(screen) for _ in range(asteroid_count)]
 spriteShip = SpriteShip(screen)
 
 direction = np.array([0,0])
+
+def left():
+    return np.array([-1,0])
+def right():
+     return np.array([1,0])
+def up():
+    return np.array([0,-1])
+def down():
+    return np.array([0,1])
 
 running = True
 while running:
@@ -27,25 +49,57 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+
             if event.key == pygame.K_RIGHT:
-                direction = np.array([-1,0])
+                direction =right()
             
             if event.key == pygame.K_LEFT:
-                direction = np.array([1,0])
+                direction = left()
             
             if event.key == pygame.K_DOWN:
-                direction = np.array([0,1])
+                direction = down()
+
             if event.key == pygame.K_UP:
-                direction = np.array([0,-1])
+                direction = up()
+
         if event.type == pygame.KEYUP:
             direction = np.array([0,0])
+
+        direction = np.array([0,0])
+        if event.type == pygame.JOYAXISMOTION:
+            print(event)
+            if (event.axis == 0) & (event.value>.1):
+                direction = right()
+            elif (event.axis == 0) & (event.value<-.1):
+                direction = left()
+
+            elif (event.axis == 1) & (event.value>.1):
+                direction = down()
+            elif (event.axis == 1) & (event.value<-.1):
+                direction = up()
+
+        elif event.type == pygame.JOYBUTTONDOWN:
+            print(event)
+
 
     screen.fill((0,0,0))
     
     time_elapsed_seconds = clock.tick()/1000
 
+    spriteShip.move(time_elapsed_seconds, direction)
     for asteroid in asteroids:
         asteroid.move(time_elapsed_seconds)
-    spriteShip.move(time_elapsed_seconds, direction)
+        if asteroid.rect.colliderect(spriteShip.rect):
+            asteroids.remove(asteroid)
+            pygame.mixer.Sound('../resources/hq-explosion-6288.mp3').play()   
+            lives -=1
+            if lives==0:
+                Tk().wm_withdraw() #to hide the main window
+                messagebox.showinfo('Game Over')
+                sys.exit()     
+    
+    sc = font.render(f'lives: {lives}, time: {(pygame.time.get_ticks()/1000):.1f} seconds', True, (255,255,255))
+    screen.blit(sc, (20,20)) 
+
     pygame.display.update()
     
