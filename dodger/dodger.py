@@ -1,34 +1,34 @@
 #!/usr/bin/env python
 
-import ast
 import pygame
 import numpy as np
+from tkinter import *
+from tkinter import messagebox
+import sys
+sys.path.insert(0,'../')
+import common.asteroid
+import spriteship
+
 
 screen_dims  = np.array([800, 600])
+asteroid_count = 20
+lives = 3
 
 pygame.init()
+
 pygame.joystick.init()
 joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-print(joysticks)
+
 screen = pygame.display.set_mode(screen_dims, 0, 32)
 
 clock = pygame.time.Clock()
 
-from Asteroid import Asteroid
-from SpriteShip import SpriteShip
-
-import sys
-from tkinter import *
-from tkinter import messagebox
-
-asteroid_count = 20
 
 font = pygame.font.Font('freesansbold.ttf', 32)
 
-lives = 3
 
-asteroids = [Asteroid(screen) for _ in range(asteroid_count)]
-spriteShip = SpriteShip(screen)
+asteroids = [common.asteroid.Asteroid(screen) for _ in range(asteroid_count)]
+spriteShip = spriteship.SpriteShip(screen)
 
 direction = np.array([0,0])
 

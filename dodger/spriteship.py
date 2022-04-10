@@ -1,9 +1,9 @@
-from Roller import Roller
+import common.roller
 import numpy as np
 import pygame 
 from pygame import Rect
 
-class SpriteShip(Roller):
+class SpriteShip(common.roller.Roller):
     velocity_const = 240
     ship_width = 30
     ship_length = 40

@@ -1,11 +1,11 @@
 import numpy as np
 import random
 import numpy as np
-from utils import degrees_to_radians
-from Bouncer import Bouncer
+from common.utils import *
+import common.bouncer
 import pygame
 
-class Asteroid(Bouncer):
+class Asteroid(common.bouncer.Bouncer):
     velocity_constant = 180
     def __init__(self, screen):
         super().__init__()

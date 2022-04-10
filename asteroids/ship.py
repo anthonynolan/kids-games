@@ -1,14 +1,17 @@
 import numpy as np
 import pygame
-from Roller import Roller
-from utils import rotate, degrees_to_radians, normalize, degrees_to_cartesian
+
+import sys
+sys.path.insert(0, '../')
+import common.roller
+import common.utils
 
 rotation_const = 100
 acc_const = 3
 
-class Ship(Roller):
+class Ship(common.roller.Roller):
     def __init__(self, screen, screen_dims, pos = np.array([0.,0.]), vel =np.array([0.,0.]), acc=np.array([0.,0.]), radius=5):
-        super().__init__(screen_dims)
+        super().__init__()
         
         self.pos = pos
         self.vel = vel
@@ -16,6 +19,7 @@ class Ship(Roller):
         self.radius = radius
         self.rotation_angle = 0
         self.screen = screen
+        self.screen_dims = screen_dims
 
         self.origin = np.array([0,0])
         self.gun = self.screen_dims/2
@@ -30,8 +34,8 @@ class Ship(Roller):
             self.rotation_angle +=rotation_const*time_passed_seconds
 
         if accelerating:
-            self.acc[0] += acc_const * np.cos(degrees_to_radians(self.rotation_angle))
-            self.acc[1] += acc_const * np.sin(degrees_to_radians(self.rotation_angle))
+            self.acc[0] += acc_const * np.cos(common.utils.degrees_to_radians(self.rotation_angle))
+            self.acc[1] += acc_const * np.sin(common.utils.degrees_to_radians(self.rotation_angle))
             print(f'acceleration {self.acc}')
         else:
             self.acc = np.array([0,0])
@@ -49,9 +53,9 @@ class Ship(Roller):
         hull_angle = 60
         points = np.array([self.origin,
                 np.array([ship_length, self.origin[1]]), 
-                np.array([ship_length*np.cos(degrees_to_radians(hull_angle)), ship_length*np.sin(degrees_to_radians(hull_angle))])])
+                np.array([ship_length*np.cos(common.utils.degrees_to_radians(hull_angle)), ship_length*np.sin(common.utils.degrees_to_radians(hull_angle))])])
 
-        points = [(rotate(point-centre, self.rotation_angle)+centre)+self.screen_dims/2 for point in points]
+        points = [(common.utils.rotate(point-centre, self.rotation_angle)+centre)+self.screen_dims/2 for point in points]
         self.gun = points[0]
         
         self.rect = pygame.draw.polygon(self.screen, (0, 255,0),
@@ -59,9 +63,9 @@ class Ship(Roller):
         )
         pygame.draw.circle(self.screen, (255,0,0), points[0]+self.pos-self.screen_dims/2, 1)
 
-        pygame.draw.line(self.screen, (255, 0, 0), self.screen_dims/2, self.screen_dims/2+normalize(self.acc), width=10)
-        pygame.draw.line(self.screen, (255, 0, 255), self.screen_dims/2, self.screen_dims/2+normalize(self.vel), width=5)
-        pygame.draw.line(self.screen, (0, 0, 255), self.screen_dims/2, self.screen_dims/2+degrees_to_cartesian(self.rotation_angle), width=5)
+        pygame.draw.line(self.screen, (255, 0, 0), self.screen_dims/2, self.screen_dims/2+common.utils.normalize(self.acc), width=10)
+        pygame.draw.line(self.screen, (255, 0, 255), self.screen_dims/2, self.screen_dims/2+common.utils.normalize(self.vel), width=5)
+        pygame.draw.line(self.screen, (0, 0, 255), self.screen_dims/2, self.screen_dims/2+common.utils.degrees_to_cartesian(self.rotation_angle), width=5)
 
     def __repr__(self):
         return f'{self.pos, self.vel, self.acc, self.rotation_angle}'
