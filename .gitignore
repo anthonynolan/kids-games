@@ -4,5 +4,7 @@ __pycache__/
 Asteroids.mp4
 
 .vscode/
-model/
-player_images 
+ml/model/
+ml/training_images
+ml/player_images 
+

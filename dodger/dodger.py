@@ -57,16 +57,16 @@ def down():
     return np.array([0,1])
 
 
-# import tensorflow as tf
-# new_model = tf.keras.models.load_model('../model')
+import tensorflow as tf
+new_model = tf.keras.models.load_model('../ml/model')
 
 # Check its architecture
-# new_model.summary()
+new_model.summary()
 
 selected_player = None
 image_counter = 0
 
-player_image_path = os.path.join(os.getcwd(), 'player_images')
+player_image_path = os.path.join(os.getcwd(), '../ml/player_images')
 
 pygame.time.set_timer(pygame.USEREVENT+1, 5000)
 
@@ -135,8 +135,8 @@ while running:
     image_array = pygame.surfarray.array3d(image)
     # print(image_array.shape)
 
-    predicted_player = 'model not operational' 
-    # predicted_player = "aoife" if np.argmax(new_model.predict(tf.expand_dims(tf.image.resize(image_array, (224,224)), 0)))==0 else "cathal"
+    # predicted_player = 'model not operational' 
+    predicted_player = "aoife" if np.argmax(new_model.predict(tf.expand_dims(tf.image.resize(image_array, (224,224)), 0)))==0 else "cathal"
 
 
     # screen.fill((0,0,0))
